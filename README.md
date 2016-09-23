@@ -13,14 +13,6 @@ For a working implementation of this project see the `app/` folder.
 * Include the following dependency in your project `build.gradle` file.
 
 ```groovy
-repositories {
-    maven {
-        url 'https://dl.bintray.com/jul/maven/'
-    }
-}
-
-...
-
 compile 'com.funtory.jul:slideshow-imageview:1.0.1'
 ```
 * For setting images
