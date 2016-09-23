@@ -1,2 +1,2 @@
-# Slideshow Imageview
-Slideshow Imageview for Android
+# Slideshow Toolbar
+Slideshow Toolbar using slideshowimageview
