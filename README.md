@@ -10,7 +10,7 @@ Slideshow Toolbar using slideshowimageview
 
 For a working implementation of this project see the `app/` folder.
 
-1. Include the following dependency in your project `build.gradle` file.
+* Include the following dependency in your project `build.gradle` file.
 
 ```groovy
 repositories {
@@ -23,7 +23,15 @@ repositories {
 
 compile 'com.funtory.jul:slideshow-imageview:1.0.1'
 ```
+* For setting images
+```java
+ slideshowImageView.setImages(R.drawable.test1, R.drawable.test2, R.drawable.test3);
+```
 
+* For adding images
+```java
+slideshowImageView.addImages(R.drawable.test3, R.drawable.test4, R.drawable.test5);
+```
 
 
 
