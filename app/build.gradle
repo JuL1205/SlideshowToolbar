@@ -1,12 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
-repositories {
-    maven {
-        url 'https://dl.bintray.com/jul/maven/'
-    }
-}
-
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.1"
