@@ -16,6 +16,9 @@ publish {
     artifactId = 'slideshow-imageview'
     publishVersion = '1.0.0'
     desc = 'SildeShow ImageView for Android'
+    website = 'https://github.com/JuL1205/slideshowimageview'
+    issueTracker = "${website}/issues"
+    repository = "${website}.git"
 }
 
 android {
