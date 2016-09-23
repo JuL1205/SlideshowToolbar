@@ -5,6 +5,30 @@ Slideshow Toolbar using slideshowimageview
 ![SlideshowToolbar Sample Material](https://raw.githubusercontent.com/JuL1205/SlideshowToolbar/master/screenshots/screen.gif)
 
 
+ 
+# Usage
+
+For a working implementation of this project see the `app/` folder.
+
+1. Include the following dependency in your project `build.gradle` file.
+
+```groovy
+repositories {
+    maven {
+        url 'https://dl.bintray.com/jul/maven/'
+    }
+}
+
+...
+
+compile 'com.funtory.jul:slideshow-imageview:1.0.1'
+```
+
+
+
+      
+
+
 # License
 
     Copyright 2016 JuL
