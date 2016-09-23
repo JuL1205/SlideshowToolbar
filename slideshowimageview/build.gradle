@@ -12,11 +12,11 @@ buildscript {
 
 publish {
     userOrg = 'jul'
-    groupId = 'com.funtory'
+    groupId = 'com.funtory.jul'
     artifactId = 'slideshow-imageview'
     publishVersion = '1.0.0'
     desc = 'SildeShow ImageView for Android'
-    website = 'https://github.com/JuL1205/slideshowimageview'
+    website = 'https://github.com/JuL1205/SlideshowToolbar'
     issueTracker = "${website}/issues"
     repository = "${website}.git"
 }
