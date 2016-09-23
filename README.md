@@ -26,8 +26,6 @@ compile 'com.funtory.jul:slideshow-imageview:1.0.1'
 
 
 
-      
-
 
 # License
 
