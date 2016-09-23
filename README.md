@@ -1,2 +1,2 @@
-# slideshowimageview
+# Slideshow Imageview
 Slideshow Imageview for Android
