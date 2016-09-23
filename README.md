@@ -2,7 +2,7 @@
 Slideshow Toolbar using slideshowimageview
 
 
-![SlideshowToolbar Sample Material](https://raw.githubusercontent.com/JuL1205/SlideshowToolbar/master/screenshots/screen.gif)
+![SlideshowToolbar Sample Material](https://raw.githubusercontent.com/JuL1205/SlideshowToolbar/master/images/screen.gif)
 
 
  
