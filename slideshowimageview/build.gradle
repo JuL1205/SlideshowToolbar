@@ -14,7 +14,7 @@ publish {
     userOrg = 'jul'
     groupId = 'com.funtory.jul'
     artifactId = 'slideshow-imageview'
-    publishVersion = '1.0.1'
+    publishVersion = '1.0.2'
     desc = 'SildeShow ImageView for Android'
     website = 'https://github.com/JuL1205/SlideshowToolbar'
     issueTracker = "${website}/issues"
@@ -26,8 +26,8 @@ android {
     buildToolsVersion "24.0.1"
 
     defaultConfig {
-        minSdkVersion 19
-        targetSdkVersion 24
+        minSdkVersion 17
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0.0"
     }
