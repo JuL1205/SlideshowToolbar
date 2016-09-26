@@ -13,7 +13,7 @@ For a working implementation of this project see the `app/` folder.
 * Include the following dependency in your project `build.gradle` file.
 
 ```groovy
-compile 'com.funtory.jul:slideshow-imageview:1.0.1'
+compile 'com.funtory.jul:slideshow-imageview:1.0.2'
 ```
 * For setting images
 ```java
