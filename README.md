@@ -33,7 +33,7 @@ The sample application (the source is in the repository) has been published onto
 #ToDo
 * Implement handling bitmap
 * Implement remove interface
-* ~~Solve memory leak~~
+* ~~Solve memory leak~~ : solved
 
 
 # License
