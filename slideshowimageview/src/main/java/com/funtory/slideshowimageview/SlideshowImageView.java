@@ -1,19 +1,19 @@
 package com.funtory.slideshowimageview;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.funtory.slideshowimageview.constants.Anim;
+import com.funtory.slideshowimageview.viewmodel.SlideshowViewModel;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /*
  * Copyright (C) 2016 JuL <jul.funtory@gmail.com>
@@ -32,18 +32,7 @@ import java.util.Random;
  */
 public class SlideshowImageView extends RelativeLayout {
 
-    private static final float SCALE = 1.5f;
-    private static final long ANIM_DURATION = 15 * 1000;
-
-    private List<Integer> images = new ArrayList<>();
-
-    private float[] animRangeX = null;
-    private float[] animRangeY = null;
-
-    private Random random;
-
-    private boolean isAnimate = false;
-    private int currentChildIndex = -1;
+    private SlideshowViewModel slideshowViewModel = new SlideshowViewModel();
 
     public SlideshowImageView(Context context) {
         super(context);
@@ -70,8 +59,6 @@ public class SlideshowImageView extends RelativeLayout {
         imageView = new ImageView(getContext());
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-        random = new Random(System.currentTimeMillis());
     }
 
     private ImageView getImageView(int index) {
@@ -84,12 +71,12 @@ public class SlideshowImageView extends RelativeLayout {
      * @param resIds
      */
     public void setImages(int... resIds) {
-        images.clear();
         for (int i = 0; i < getChildCount(); i++) {
             getImageView(i).setTag(null);
         }
 
-        addImages(resIds);
+        slideshowViewModel.setImages(resIds);
+        tryAnim(resIds);
     }
 
     /**
@@ -98,12 +85,14 @@ public class SlideshowImageView extends RelativeLayout {
      * @param resIds
      */
     public void addImages(int... resIds) {
-        for (int resId : resIds) {
-            images.add(resId);
-        }
+        slideshowViewModel.addImages(resIds);
+        tryAnim(resIds);
+    }
 
-        if (images.size() > 1) { //2개 이상일 경우부터 애니메이션
-            if (!isAnimate) {     //애니메이션되지 않고 있을 경우
+    private void tryAnim(int... resIds){
+        if (slideshowViewModel.getImageCount() > 1) { //2개 이상일 경우부터 애니메이션
+            if (!slideshowViewModel.isAnimate()) {     //애니메이션되지 않고 있을 경우
+                final int currentChildIndex = slideshowViewModel.getCurrentChildIndex();
                 if (currentChildIndex > -1) {
                     gone(currentChildIndex);
                     postDelayed(new Runnable() {
@@ -111,7 +100,7 @@ public class SlideshowImageView extends RelativeLayout {
                         public void run() {
                             anim(Math.abs(currentChildIndex - 1));
                         }
-                    }, ANIM_DURATION / 4);
+                    }, Anim.DURATION / 4);
                 } else {
                     post(new Runnable() {
                         @Override
@@ -126,7 +115,8 @@ public class SlideshowImageView extends RelativeLayout {
         } else { //1개일 경우는 그냥 세팅만 하자
             getImageView(0).setImageResource(resIds[0]);
             getImageView(0).setTag(0);
-            currentChildIndex = 0;
+
+            slideshowViewModel.initAnimConfig();
         }
     }
 
@@ -134,101 +124,50 @@ public class SlideshowImageView extends RelativeLayout {
         ImageView target = getImageView(targetChildIndex);
 
         ObjectAnimator goneAlpha = ObjectAnimator.ofFloat(target, "alpha", 1.0f, 0.0f);
-        goneAlpha.setDuration(ANIM_DURATION);
+        goneAlpha.setDuration(Anim.DURATION);
 
         goneAlpha.start();
     }
 
 
-    /**
-     * 각 축으로 움직일 수 있는 최대/최소 범위 설정.
-     */
-    private void initRange() {
-        float x = ((getMeasuredWidth() * SCALE) - getMeasuredWidth()) / 2.0f;
-        float y = ((getMeasuredHeight() * SCALE) - getMeasuredHeight()) / 2.0f;
-        animRangeX = new float[]{x, -x};
-        animRangeY = new float[]{y, -y};
-    }
 
-    /**
-     * x 축 움직일 값을 랜덤하게 얻는다.
-     *
-     * @return
-     */
-    private float getRangeX() {
-        return animRangeX[random.nextInt(animRangeX.length)];
-    }
-
-    /**
-     * y 축 움직일 값을 랜덤하게 얻는다.
-     *
-     * @return
-     */
-    private float getRangeY() {
-        return animRangeY[random.nextInt(animRangeY.length)];
-    }
-
-    /**
-     * 현재 child에 세팅되어있는 index 외에서 랜덤한 값을 얻는다.
-     *
-     * @return
-     */
-    private int getRandomImageIndex() {
-        List<Integer> candi = new ArrayList<>();
-
-        int i1 = getImageView(0).getTag() == null ? -1 : (int) getImageView(0).getTag();
-        int i2 = getImageView(1).getTag() == null ? -1 : (int) getImageView(1).getTag();
-
-        for (int i = 0; i < images.size(); i++) {
-            if (i != i1 && i != i2) {
-                if (!candi.contains(i)) {
-                    candi.add(i);
-                }
-            }
+    private List<Integer> getCurrentIndex(){
+        List<Integer> result = new ArrayList<>();
+        for(int i = 0 ; i < getChildCount() ; i++){
+            result.add(getChildAt(i).getTag() == null ? -1 : (Integer) getChildAt(i).getTag());
         }
 
-        if (candi.size() == 0) {
-            return -1;
-        } else if (candi.size() == 1) {
-            return candi.get(0);
-        } else {
-            return candi.get(random.nextInt(candi.size()));
-        }
+        return result;
     }
 
     private void anim(final int targetChildIndex) {
-        isAnimate = true;
-        currentChildIndex = targetChildIndex;
-
-        if (animRangeX == null || animRangeY == null) {
-            initRange();
-        }
+        slideshowViewModel.updateAnimConfig(this, targetChildIndex);
 
         ImageView target = getImageView(targetChildIndex);
-        target.setScaleX(SCALE);
-        target.setScaleY(SCALE);
+        target.setScaleX(Anim.SCALE);
+        target.setScaleY(Anim.SCALE);
 
-        int imageIndex = getRandomImageIndex();
+        int imageIndex = slideshowViewModel.getRandomImageIndex(getCurrentIndex());
 
         if (imageIndex > -1) {
             target.setTag(imageIndex);
-            target.setImageResource(images.get(imageIndex));
+            target.setImageBitmap(slideshowViewModel.getImage(getContext(), imageIndex));
         }
 
-        float rangeX = getRangeX();
+        float rangeX = slideshowViewModel.getRangeX();
         ObjectAnimator transX = ObjectAnimator.ofFloat(target, "translationX", rangeX, -rangeX);
-        transX.setDuration(ANIM_DURATION);
+        transX.setDuration(Anim.DURATION);
 
-        float rangeY = getRangeY();
+        float rangeY = slideshowViewModel.getRangeY();
         ObjectAnimator transY = ObjectAnimator.ofFloat(target, "translationY", rangeY, -rangeY);
-        transY.setDuration(ANIM_DURATION);
+        transY.setDuration(Anim.DURATION);
 
         ObjectAnimator alpha = ObjectAnimator.ofFloat(target, "alpha", 0.0f, 1.0f);
-        alpha.setDuration(ANIM_DURATION / 2);
+        alpha.setDuration(Anim.DURATION / 2);
 
         ObjectAnimator alphaAfter = ObjectAnimator.ofFloat(target, "alpha", 1.0f, 0.0f);
-        alphaAfter.setDuration(ANIM_DURATION / 2);
-        alphaAfter.setStartDelay(ANIM_DURATION / 2);
+        alphaAfter.setDuration(Anim.DURATION / 2);
+        alphaAfter.setStartDelay(Anim.DURATION / 2);
 
         AnimatorSet animSet = new AnimatorSet();
         animSet.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -239,9 +178,9 @@ public class SlideshowImageView extends RelativeLayout {
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                anim(targetChildIndex + 1 >= getChildCount() ? 0 : targetChildIndex + 1);
+                anim(Math.abs(targetChildIndex - 1));
             }
-        }, ANIM_DURATION / 2);
+        }, Anim.DURATION / 2);
 
     }
 

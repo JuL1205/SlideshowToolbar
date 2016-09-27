@@ -49,15 +49,23 @@ public class MainActivity extends AppCompatActivity {
 
         rvList.setAdapter(new DummyAdapter());
 
-        slideshowImageView.setImages(R.drawable.test1, R.drawable.test2, R.drawable.test3);
+        slideshowImageView.setImages(R.drawable.test1);
 
         //비동기로 추가될 경우 모사
-//        slideshowImageView.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                slideshowImageView.addImages(R.drawable.test3, R.drawable.test4, R.drawable.test5);
-//            }
-//        }, 20000);
+        slideshowImageView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                slideshowImageView.addImages(R.drawable.test3, R.drawable.test4, R.drawable.test5);
+            }
+        }, 20000);
+
+        //비동기로 추가될 경우 모사
+        slideshowImageView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                slideshowImageView.addImages(R.drawable.test2, R.drawable.test6, R.drawable.test7,  R.drawable.test8,  R.drawable.test9);
+            }
+        }, 20000);
     }
 
     class DummyAdapter extends RecyclerView.Adapter{

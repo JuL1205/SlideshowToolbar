@@ -42,4 +42,6 @@ android {
 
 
 dependencies {
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
 }
