@@ -1,5 +1,6 @@
 package com.funtory.slideshowapp;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 slideshowImageView.addImages(R.drawable.test3, R.drawable.test4, R.drawable.test5);
             }
-        }, 20000);
+        }, 2000);
 
         //비동기로 추가될 경우 모사
         slideshowImageView.postDelayed(new Runnable() {
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 slideshowImageView.addImages(R.drawable.test2, R.drawable.test6, R.drawable.test7,  R.drawable.test8,  R.drawable.test9);
             }
-        }, 20000);
+        }, 2000);
     }
 
     class DummyAdapter extends RecyclerView.Adapter{
@@ -92,4 +93,5 @@ public class MainActivity extends AppCompatActivity {
             return dummy.size();
         }
     }
+
 }

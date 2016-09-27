@@ -1,8 +1,11 @@
 package com.funtory.slideshowimageview;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -33,6 +36,14 @@ import java.util.List;
 public class SlideshowImageView extends RelativeLayout {
 
     private SlideshowViewModel slideshowViewModel = new SlideshowViewModel();
+    private List<AnimatorSet> animatorSets = new ArrayList<>();
+
+    private Handler loopHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            anim(Math.abs(msg.arg1 - 1));
+        }
+    };
 
     public SlideshowImageView(Context context) {
         super(context);
@@ -50,7 +61,9 @@ public class SlideshowImageView extends RelativeLayout {
     }
 
 
+
     private void init() {
+
         //2개의 이미지뷰로 번갈아 가며..
         ImageView imageView = new ImageView(getContext());
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -124,6 +137,25 @@ public class SlideshowImageView extends RelativeLayout {
         ImageView target = getImageView(targetChildIndex);
 
         ObjectAnimator goneAlpha = ObjectAnimator.ofFloat(target, "alpha", 1.0f, 0.0f);
+        goneAlpha.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                animation.setTarget(null);
+                animation.removeListener(this);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
         goneAlpha.setDuration(Anim.DURATION);
 
         goneAlpha.start();
@@ -143,7 +175,7 @@ public class SlideshowImageView extends RelativeLayout {
     private void anim(final int targetChildIndex) {
         slideshowViewModel.updateAnimConfig(this, targetChildIndex);
 
-        ImageView target = getImageView(targetChildIndex);
+        final ImageView target = getImageView(targetChildIndex);
         target.setScaleX(Anim.SCALE);
         target.setScaleY(Anim.SCALE);
 
@@ -151,6 +183,7 @@ public class SlideshowImageView extends RelativeLayout {
 
         if (imageIndex > -1) {
             target.setTag(imageIndex);
+            target.setImageBitmap(null);
             target.setImageBitmap(slideshowViewModel.getImage(getContext(), imageIndex));
         }
 
@@ -169,20 +202,52 @@ public class SlideshowImageView extends RelativeLayout {
         alphaAfter.setDuration(Anim.DURATION / 2);
         alphaAfter.setStartDelay(Anim.DURATION / 2);
 
-        AnimatorSet animSet = new AnimatorSet();
+
+        final AnimatorSet animSet = new AnimatorSet();
         animSet.setInterpolator(new AccelerateDecelerateInterpolator());
         animSet.playTogether(transX, transY, alpha, alphaAfter);
+        animSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                animSet.setTarget(null);
+                animSet.removeListener(this);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        animatorSets.add(animSet);
         animSet.start();
 
         //무한 반복
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                anim(Math.abs(targetChildIndex - 1));
-            }
-        }, Anim.DURATION / 2);
-
+        Message message = new Message();
+        message.what = 1;
+        message.arg1 = targetChildIndex;
+        loopHandler.sendMessageDelayed(message, Anim.DURATION / 2);
     }
 
 
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        loopHandler.removeMessages(1);
+
+        for(AnimatorSet animatorSet : animatorSets){
+            animatorSet.end();
+        }
+
+        animatorSets.clear();
+        animatorSets = null;
+    }
 }

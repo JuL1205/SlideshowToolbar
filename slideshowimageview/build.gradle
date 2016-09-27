@@ -14,7 +14,7 @@ publish {
     userOrg = 'jul'
     groupId = 'com.funtory.jul'
     artifactId = 'slideshow-imageview'
-    publishVersion = '1.0.2'
+    publishVersion = '1.1.0'
     desc = 'SildeShow ImageView for Android'
     website = 'https://github.com/JuL1205/SlideshowToolbar'
     issueTracker = "${website}/issues"
@@ -22,7 +22,7 @@ publish {
 }
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 23
     buildToolsVersion "24.0.1"
 
     defaultConfig {
@@ -42,6 +42,4 @@ android {
 
 
 dependencies {
-    compile 'io.reactivex:rxandroid:1.1.0'
-    compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
 }
