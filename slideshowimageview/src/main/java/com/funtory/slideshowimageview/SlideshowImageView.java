@@ -173,6 +173,10 @@ public class SlideshowImageView extends RelativeLayout {
     }
 
     private void anim(final int targetChildIndex) {
+        if(animatorSets == null){
+            return;
+        }
+
         slideshowViewModel.updateAnimConfig(this, targetChildIndex);
 
         final ImageView target = getImageView(targetChildIndex);
