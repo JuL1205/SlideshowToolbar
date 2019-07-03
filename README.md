@@ -30,11 +30,6 @@ The sample application (the source is in the repository) has been published onto
 
 [![Get it on Google Play](https://raw.githubusercontent.com/JuL1205/SlideshowToolbar/master/images/googleplay.png)](https://play.google.com/store/apps/details?id=com.funtory.slideshowapp)
 
-#ToDo
-* Implement handling bitmap
-* Implement remove interface
-* ~~Resolve memory leak~~ : resolved
-
 
 # License
 
